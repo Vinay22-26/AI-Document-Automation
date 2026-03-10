@@ -44,7 +44,7 @@ The project follows the **Model-View-Controller (MVC)** architectural pattern to
 
 1. **Java 21** installed.
 2. **MySQL Server** running.
-3. **Tesseract Data**: Download `eng.traineddata` and place it in your local directory (e.g., `D:/doc-ai-automation/tessdata`).
+3. **Tesseract Data**: Download `eng.traineddata` and place it in your local directory (in a same project folder).
 
 ---
 
@@ -54,3 +54,4 @@ The project follows the **Model-View-Controller (MVC)** architectural pattern to
 Create a database named `set your configurations ` in MySQL:
 ```sql
 CREATE DATABASE your_db_name ;
+
