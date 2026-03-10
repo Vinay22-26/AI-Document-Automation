@@ -1,0 +1,43 @@
+{
+  "message" : "Document processed successfully",
+  "result" : true,
+  "data" : [ {
+    "fileName" : "co_Invoice_PartsOf.png",
+    "documentType" : "INVOICE",
+    "Detected_Schema" : "GENERAL",
+    "Document_Number" : "MISSING",
+    "Tax_ID" : "MISSING",
+    "PAN_Number" : "MISSING",
+    "Invoice_Date" : "MISSING",
+    "Total_Amount" : "379.25",
+    "Confidence_Score" : 25,
+    "date" : "2018-05-14",
+    "identified_total" : "$394.75",
+    "email" : "Not Found",
+    "table details" : [ {
+      "Item" : "Professional Plan’",
+      "Quantity" : "1",
+      "Unit_Price" : "$99.00",
+      "Amount" : "$99.00"
+    }, {
+      "Item" : "05/14/2018",
+      "Quantity" : "-",
+      "Unit_Price" : "06/14/2018"
+    }, {
+      "Item" : "Small Instance (Hourly)?",
+      "Quantity" : "353",
+      "Unit_Price" : "$0.25",
+      "Amount" : "$88.25"
+    }, {
+      "Item" : "Large Instance (Hourly)'",
+      "Quantity" : "415",
+      "Unit_Price" : "$0.50",
+      "Amount" : "$207.50"
+    } ],
+    "bankDetails" : {
+      "Bank_Name" : "Not Found",
+      "Account_Number" : "Not Found",
+      "IFSC_Code" : "Not Found"
+    }
+  } ]
+}

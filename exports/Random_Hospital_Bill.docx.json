@@ -1,0 +1,51 @@
+{
+  "message" : "Document processed successfully",
+  "result" : true,
+  "data" : [ {
+    "fileName" : "Random_Hospital_Bill.docx",
+    "documentType" : "INVOICE",
+    "Detected_Schema" : "HEALTHCARE",
+    "Document_Number" : "B1LL45327",
+    "Tax_ID" : "29ABCDE1234F1Z5",
+    "PAN_Number" : "MISSING",
+    "Invoice_Date" : "23-02-2026",
+    "Total_Amount" : "1",
+    "Patient_ID" : "Details",
+    "Patient_Name" : "Rahul Sharma\nPatient",
+    "Confidence_Score" : 100,
+    "date" : "23-02-2026",
+    "identified_total" : "INR 6500",
+    "email" : "Not Found",
+    "table details" : [ {
+      "SNo" : "1",
+      "Service_Description" : "Consultation Fee",
+      "Quantity" : "1",
+      "Amount_INR" : "500"
+    }, {
+      "SNo" : "2",
+      "Service_Description" : "Blood Test",
+      "Quantity" : "2",
+      "Amount_INR" : "1200"
+    }, {
+      "SNo" : "3",
+      "Service_Description" : "X-Ray",
+      "Quantity" : "1",
+      "Amount_INR" : "1500"
+    }, {
+      "SNo" : "4",
+      "Service_Description" : "Medicines",
+      "Quantity" : "5",
+      "Amount_INR" : "800"
+    }, {
+      "SNo" : "5",
+      "Service_Description" : "Room Charges (1 day)",
+      "Quantity" : "1",
+      "Amount_INR" : "2500"
+    } ],
+    "bankDetails" : {
+      "Bank_Name" : "Not Found",
+      "Account_Number" : "Not Found",
+      "IFSC_Code" : "Not Found"
+    }
+  } ]
+}
