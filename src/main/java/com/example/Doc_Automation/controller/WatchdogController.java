@@ -50,7 +50,7 @@ public class WatchdogController {
         WatchService watchService = FileSystems.getDefault().newWatchService();
         path.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
 
-        // Startup Scan
+        
         File folder = new File(inputDirPath);
         File[] existingFiles = folder.listFiles();
         if (existingFiles != null) {
@@ -71,16 +71,14 @@ public class WatchdogController {
     private void processFile(File file) {
         String fileName = file.getName();
         try {
-            // 1. Extract and Classify
+           
             String text = reader.extract(file);
-            DocumentClassifier.DocType type = classifier.classify(text);
-
-            // 2. Extract Data
+            DocumentClassifier.DocType type = classifier.classify(text);            
             Map<String, Object> allData = dataExtractor.extractAllData(file, text);
             Map<String, Object> schemaData = schemaEngineService.applySchema(text);
             Map<String, Object> finalReport = outputBuilder.buildFinalOutput(fileName, type.toString(), allData, schemaData);
 
-            // 3. PERSIST TO MYSQL
+           
             ProcessedDocument dbRecord = new ProcessedDocument();
             dbRecord.setFileName(fileName);
             dbRecord.setDocumentType(type.toString());
@@ -88,7 +86,7 @@ public class WatchdogController {
             dbRecord.setExtractedJson(mapper.writeValueAsString(finalReport));
             repository.save(dbRecord);
 
-            // 4. Export and Archive
+            
             exporter.exportToJson(finalReport, "exports/" + fileName);
             moveFile(file, "archive");
             AuditLoggerController.log(fileName, "SUCCESS", "SYSTEM");
