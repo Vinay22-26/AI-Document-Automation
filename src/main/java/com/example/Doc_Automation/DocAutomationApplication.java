@@ -11,10 +11,14 @@ public class DocAutomationApplication {
 	public static void main(String[] args) {
 		ApplicationContext context = SpringApplication.run(DocAutomationApplication.class, args);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		System.out.println("---  System started  ---");
 =======
 		System.out.println("---System Active ---");
 >>>>>>> 6c245f4e818a2056b1a716baf74edfed472b129c
+=======
+		System.out.println("---  System started  ---");
+>>>>>>> e3c77e3 (Update project files)
 
 
 		String[] dirs = {"input", "exports", "archive", "errors"};
