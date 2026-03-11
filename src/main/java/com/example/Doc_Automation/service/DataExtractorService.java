@@ -22,9 +22,25 @@ import technology.tabula.extractors.BasicExtractionAlgorithm;
 @Service
 
 public class DataExtractorService {
-    private static final Pattern EMAIL = Pattern.compile("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
-    private static final Pattern DATE = Pattern.compile("(\\d{1,4}[/-]\\d{1,2}[/-]\\d{2,4})|([A-Z][a-z]{2}\\s\\d{1,2},?\\s\\d{4})");
-    private static final Pattern MONEY = Pattern.compile("(?:\\$|Rs\\.?|INR)?\\s?[0-9,]+\\.[0-9]{2}\\b");
+    private static final Pattern EMAIL = Pattern.compile(
+            "(?i)\\b[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}\\b"
+    );
+    private static final Pattern DATE = Pattern.compile(
+            "(?i)\\b(" +
+                    "(?:0?[1-9]|[12][0-9]|3[01])[\\/\\-.](?:0?[1-9]|1[0-2])[\\/\\-.](?:19|20)\\d{2}" +
+                    "|" +
+                    "(?:19|20)\\d{2}[\\/\\-.](?:0?[1-9]|1[0-2])[\\/\\-.](?:0?[1-9]|[12][0-9]|3[01])" +
+                    "|" +
+                    "(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\\s\\d{1,2},?\\s(?:19|20)\\d{2}" +
+                    "|" +
+                    "\\d{1,2}\\s(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\\s(?:19|20)\\d{2}" +
+                    ")\\b"
+    );
+    private static final Pattern MONEY = Pattern.compile(
+            "(?i)\\b(?:\\$|₹|€|£|rs\\.?|inr|usd|eur|gbp|cad|aud)?\\s?" +
+                    "(?:[0-9]{1,3}(?:[,\\.][0-9]{3})*|[0-9]+)" +
+                    "(?:[\\.,][0-9]{2})?\\b"
+    );
 
     public Map<String, Object> extractAllData(File file, String text) {
         Map<String, Object> data = new LinkedHashMap<>();
@@ -37,9 +53,32 @@ public class DataExtractorService {
         data.put("key_fields", keyFields);
 
         Map<String, String> bankDetails = new LinkedHashMap<>();
-        bankDetails.put("Bank_Name", extractGroup(text, "(?si)(?:Bank Details|Bank Name|Bank)\\s*[:\\-]?\\s*\\r?\\n?\\s*([A-Za-z\\s]+(?:Bank|International|Limited|Ltd)[^\\n\\r]*)"));
-        bankDetails.put("Account_Number", extractGroup(text, "(?i)(?:Account\\s*(?:Number|No)|A/?c\\.?\\s*No\\.?)\\s*[:\\-o]?\\s*([0-9\\s]+)"));
-        bankDetails.put("IFSC_Code", extractGroup(text, "(?i)IFSC(?:\\s*Code)?\\s*[:\\-]?\\s*([A-Z0-9]+)"));
+        bankDetails.put("Bank_Name",
+                extractGroup(text,
+                        "(?si)\\b(?:b[a@4]nk\\s*d[e3]tails|b[a@4]nk\\s*n[a@4]me|b[a@4]nk)\\b" +
+                                "\\s*[:\\-]?\\s*\\r?\\n?\\s*" +
+                                "([A-Za-z\\s&.,'-]{3,100}?(?:Bank|International|Corporation|Limited|Ltd|Inc|Group|Trust)[^\\n\\r]*)"
+                )
+        );
+        bankDetails.put("Account_Number",
+                extractGroup(text,
+                        "(?i)\\b(?:" +
+                                "a\\s*c\\s*c\\s*o\\s*u\\s*n\\s*t\\s*(?:n\\s*u\\s*m\\s*b\\s*e\\s*r|n\\s*o\\.?)?" +
+                                "|" +
+                                "a\\s*/?\\s*c\\s*\\.?\\s*n\\s*o\\.?" +
+                                "|" +
+                                "a\\s*c\\s*c\\s*t\\s*n\\s*o\\.?" +
+                                ")" +
+                                "\\s*[:\\-]?\\s*" +
+                                "([A-Z0-9][A-Z0-9\\s\\-]{5,33})"
+                )
+        );
+        bankDetails.put("IFSC_Code",
+                extractGroup(text,
+                        "(?i)\\b[iI1l][fF][sS5][cC]\\b(?:\\s*code)?\\s*[:\\-]?\\s*" +
+                                "([A-Z]{4}0[A-Z0-9]{6})"
+                )
+        );
         data.put("bank_details", bankDetails);
 
         if (file != null && file.getName().toLowerCase().endsWith(".pdf")) {
@@ -69,21 +108,44 @@ public class DataExtractorService {
     }
 
     private String findTotal(String t) {
+
         if (t == null) return "Not Found";
-        Pattern p = Pattern.compile("(?i)(net amount|sub Total|total amount|total|balance|grand total)[:\\s-]*((?:\\$|Rs\\.?|INR)?\\s?[0-9,.]+)");
+
+        Pattern p = Pattern.compile(
+                "(?i)\\b(" +
+                        "n[e3]t\\s*am[o0]unt|" +
+                        "sub\\s*t[o0]tal|" +
+                        "t[o0]tal\\s*am[o0]unt|" +
+                        "t[o0]tal|" +
+                        "balance|" +
+                        "g[rn]a?nd\\s*t[o0]tal" +
+                        ")\\b" +
+                        "[:\\s\\-]*" +
+                        "(" +
+                        "(?:\\$|₹|€|£|rs\\.?|inr|usd|eur|gbp|cad|aud)?\\s*" +
+                        "(?:[0-9]{1,3}(?:[,\\.][0-9]{3})*|[0-9]+)" +
+                        "(?:[\\.,][0-9]{2})?" +
+                        ")"
+        );
+
         Matcher m = p.matcher(t);
         if (m.find()) return m.group(2).trim();
 
         Matcher m2 = MONEY.matcher(t);
         double max = 0;
         String res = "Not Found";
+
         while (m2.find()) {
             try {
                 String clean = m2.group().replaceAll("[^0-9.]", "");
                 double v = Double.parseDouble(clean);
-                if (v > max) { max = v; res = m2.group(); }
-            } catch (NumberFormatException e) {}
+                if (v > max) {
+                    max = v;
+                    res = m2.group();
+                }
+            } catch (NumberFormatException ignored) {}
         }
+
         return res;
     }
 

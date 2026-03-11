@@ -10,7 +10,7 @@ import java.io.File;
 public class DocAutomationApplication {
 	public static void main(String[] args) {
 		ApplicationContext context = SpringApplication.run(DocAutomationApplication.class, args);
-		System.out.println("--- com.example.Doc_Automation System Active ---");
+		System.out.println("---  System started  ---");
 
 
 		String[] dirs = {"input", "exports", "archive", "errors"};
